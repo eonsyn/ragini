@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Special</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const card = document.getElementById("card");
+            const startButton = document.getElementById("start-button");
+            const questionContainer = document.getElementById("question-container");
+            const questionText = document.getElementById("question-text");
+            const gifDisplay = document.getElementById("gif-display");
+            const noButton = document.getElementById("no-button");
+            const yesButton = document.getElementById("yes-button");
+
+            const questions = [
+                { text: "Do you think I'm cute? 😏", gif: "https://i.giphy.com/OJKqpxwbSAdTMDzcLa.webp" },
+                { text: "Would you hold my hand on a cold night? 🥰", gif: "https://media4.giphy.com/media/mpWQkl5jGLOjjApXUJ/giphy.gif" },
+                { text: "Can I call you ‘mine’? 😘", gif: "https://i.giphy.com/OJKqpxwbSAdTMDzcLa.webp" },
+                { text: "Will you be my Valentine? ❤️", gif: "https://i.giphy.com/ZQzAUHLBrjcc75KcIJ.webp" }
+            ];
+
+            let questionIndex = 0;
+            let yesButtonSize = 1;
+
+            startButton.addEventListener("click", function () {
+                card.classList.add("hidden");
+                questionContainer.classList.remove("hidden");
+            });
+
+            noButton.addEventListener("click", function () {
+                yesButtonSize += 0.5;
+                yesButton.style.transform = `scale(${yesButtonSize})`;
+            });
+
+            yesButton.addEventListener("click", function () {
+                if (questionIndex < questions.length - 1) {
+                    questionIndex++;
+                    questionText.innerText = questions[questionIndex].text;
+                    gifDisplay.src = questions[questionIndex].gif;
+                    yesButtonSize = 1;
+                    yesButton.style.transform = `scale(${yesButtonSize})`;
+                } else {
+                    showFinalScreen();
+                }
+            });
+        });
+
+        function showFinalScreen() {
+            document.body.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-screen bg-[#FFF5E1] text-center">
+                    <h1 class="text-5xl font-bold text-[#E63946]">I Knew You Would Say Yes! 💖</h1>
+                    <p class="text-lg text-[#6D214F] mt-4">You're my Valentine now! 😍</p>
+                    <button onclick="playCelebration()" class="mt-6 px-6 py-3 bg-[#F4A7B9] text-white font-semibold rounded-lg hover:bg-[#E63946]">
+                        Make it Official 💍
+                    </button>
+                    <div id="hearts-container"></div>
+                    <audio id="celebration-sound" src="./asset/music.mp3" preload="auto"></audio>
+                </div>
+            `;
+        }
+
+        function playCelebration() {
+            const sound = document.getElementById("celebration-sound");
+            sound.volume = 1; // Start at full volume
+            sound.play();
+
+            let fadeOut = setInterval(() => {
+                if (sound.volume > 0.05) {
+                    sound.volume -= 0.05; // Decrease volume gradually
+                } else {
+                    clearInterval(fadeOut);
+                    sound.pause();
+                    sound.currentTime = 0; // Reset audio
+                }
+            }, 5000); // Adjust interval for smoother fading
+
+            const container = document.getElementById("hearts-container");
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement("div");
+                heart.innerHTML = "💖";
+                heart.classList.add("absolute", "text-4xl", "animate-bounce");
+                heart.style.left = Math.random() * window.innerWidth + "px";
+                heart.style.top = Math.random() * window.innerHeight + "px";
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 5000);
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#FFF5E1] text-[#6D214F] p-10 flex flex-col items-center justify-center h-screen">
+    <div id="card" class="card h-2/3 border rounded-md flex flex-col p-6 items-center justify-center text-center">
+        <h1 class="text-4xl font-bold text-[#E63946]">Welcome to the Valentine World ❤️</h1>
+        <p class="text-lg mt-4">Are you excited? 😍</p>
+        <button id="start-button"
+            class="mt-6 px-6 py-3 bg-[#F4A7B9] text-white font-semibold rounded-lg hover:bg-[#E63946]">
+            Let's Go
+        </button>
+    </div>
+
+    <div id="question-container" class="hidden flex flex-col items-center justify-center">
+        <h2 id="question-text" class="text-3xl font-bold text-[#E63946]">Do you think I'm cute? 😏</h2>
+        <div class="mt-4 w-60 h-40 flex items-center justify-center">
+            <img id="gif-display" src="https://media2.giphy.com/media/ehIXbAluFpM4J1Sk5a/giphy.gif"
+                class="max-w-full max-h-full rounded-lg shadow-lg" alt="GIF">
+        </div>
+        <div class="flex gap-3 mt-6">
+            <div class="relative group">
+                <img id="gif-no" src="https://i.giphy.com/t6ISSA92dDXZplMsq1.webp"
+                    class="h-20 absolute bottom-7 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                    alt="No GIF">
+                <button id="no-button"
+                    class="px-6 py-3 bg-[#F4A7B9] text-white font-semibold rounded-lg hover:bg-[#E63946]">
+                    Of course No
+                </button>
+            </div>
+            <div class="relative group">
+                <img id="gif-yes" src="https://i.giphy.com/saP7gSnnBNLnRgUeqH.webp"
+                    class="h-20 absolute bottom-7 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                    alt="Yes GIF">
+                <button id="yes-button"
+                    class="px-6 py-3 bg-[#F4A7B9] text-white font-semibold rounded-lg hover:bg-[#E63946]">
+                    Yes
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
